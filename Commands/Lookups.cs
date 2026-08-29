@@ -1,4 +1,4 @@
-partial class Program
+internal sealed partial class CalculateSectionIdCommand
 {
     private static readonly Dictionary<char, int> CharLookup = new()
     {
@@ -99,19 +99,33 @@ partial class Program
         {'9', 7 }
     };
 
-    private static readonly Dictionary<string, int> CharacterClassLookup = new(StringComparer.OrdinalIgnoreCase)
+    private static readonly Dictionary<string, CharacterClass> CharacterClassLookup = new(StringComparer.OrdinalIgnoreCase)
     {
-        {"humar", 5 },
-        {"hunewearl", 6 },
-        {"hucast", 7 },
-        {"hucaseal", 4 },
-        {"ramar", 8 },
-        {"ramarl", 6 },
-        {"racast", 9 },
-        {"racaseal", 0 },
-        {"fomar", 5 },
-        {"fomarl", 1 },
-        {"fonewm", 2 },
-        {"fonewearl", 3 },
+        {"HUmar", new CharacterClass("HUmar", 5, "red") },
+        {"HUnewearl", new CharacterClass("HUnewearl", 6, "red") },
+        {"HUcast", new CharacterClass("HUcast", 7, "red") },
+        {"HUcaseal", new CharacterClass("HUcaseal", 4, "red") },
+        {"RAmar", new CharacterClass("RAmar", 8, "green") },
+        {"RAmarl", new CharacterClass("RAmarl", 6, "green") },
+        {"RAcast", new CharacterClass("RAcast", 9, "green") },
+        {"RAcaseal", new CharacterClass("RAcaseal", 0, "green") },
+        {"FOmar", new CharacterClass("FOmar", 5, "blue") },
+        {"FOmarl", new CharacterClass("FOmarl", 1, "blue") },
+        {"FOnewm", new CharacterClass("FOnewm", 2, "blue") },
+        {"FOnewearl", new CharacterClass("FOnewearl", 3, "blue") },
+    };
+
+    private static readonly Dictionary<int, SectionId> SectionIdLookup = new()
+    {
+        {0, new SectionId("Viridia", 0, "#00ab6b") },
+        {1, new SectionId("Greenill", 1, "#72fa3f") },
+        {2, new SectionId("Skyly", 2, "#6cfeff") },
+        {3, new SectionId("Bluefull", 3, "#3f92fc") },
+        {4, new SectionId("Purplenum", 4, "#ce00ff") },
+        {5, new SectionId("Pinkal", 5, "#ff8bc7") },
+        {6, new SectionId("Redria", 6, "#f70811") },
+        {7, new SectionId("Oran", 7, "#fe9411") },
+        {8, new SectionId("Yellowboze", 8, "#ffff00") },
+        {9, new SectionId("Whitill", 9, "#ffffff") },
     };
 }

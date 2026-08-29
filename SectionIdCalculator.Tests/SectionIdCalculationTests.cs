@@ -9,10 +9,10 @@ public class SectionIdCalculationTests
     [InlineData("PSO Lover", "fonewearl", "Oran")]
     public void CalculatesExpectedSectionId(string name, string characterClass, string expectedSectionId)
     {
-        var total = Program.CalculateValueFromCharacterClass(characterClass) + Program.CalculateValueFromName(name);
-        var sectionId = Program.CalculateSectionIdFromTotal(total);
+        var total = CalculateSectionIdCommand.CalculateValueFromCharacterClass(characterClass) + CalculateSectionIdCommand.CalculateValueFromName(name);
+        var sectionId = CalculateSectionIdCommand.CalculateSectionIdFromTotal(total);
 
-        Assert.Equal(expectedSectionId, sectionId);
+        Assert.Equal(expectedSectionId, sectionId.Name);
     }
 
     [Theory]
@@ -21,8 +21,8 @@ public class SectionIdCalculationTests
     [InlineData("ramarL")]
     public void CharacterClassLookupIsCaseInsensitive(string characterClassInput)
     {
-        var value = Program.CalculateValueFromCharacterClass(characterClassInput);
-        var expectedValue = Program.CalculateValueFromCharacterClass("ramarl");
+        var value = CalculateSectionIdCommand.CalculateValueFromCharacterClass(characterClassInput);
+        var expectedValue = CalculateSectionIdCommand.CalculateValueFromCharacterClass("ramarl");
 
         Assert.Equal(expectedValue, value);
     }
