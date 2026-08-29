@@ -6,6 +6,8 @@
     <RootNamespace>SectionIdCalculator</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+     <!-- Optional: Compresses native binaries directly into the executable -->
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
 
     <!-- Optimizations for Linux native binary-->
     <PublishSingleFile>true</PublishSingleFile>
