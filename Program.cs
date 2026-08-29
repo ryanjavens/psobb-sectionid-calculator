@@ -22,15 +22,7 @@ partial class Program
         if(parseResult.Errors.Count == 0 
             && parseResult.GetValue(name) is string parsedName)
         {
-            int total;
-            if (parseResult.GetValue(characterClass) is string parsedCharacterClass)
-            {
-                total = CalculateValueFromCharacterClass(parsedCharacterClass);
-            }
-            else
-            {
-                total = CalculateValueFromCharacterClass();
-            }
+            var total = CalculateValueFromCharacterClass(parseResult.GetValue(characterClass));
 
             total += CalculateValueFromName(parsedName);
 
@@ -48,9 +40,8 @@ partial class Program
     {
         var total = 0;
 
-        for(var i = 0; i < name.Length; i++)
+        foreach(var currentChar in name)
         {
-            var currentChar = name[i];
             if(!CharLookup.TryGetValue(currentChar, out var charValue))
             {
                 throw new ArgumentException($"Invalid character {currentChar}");
@@ -64,30 +55,23 @@ partial class Program
 
     internal static int CalculateValueFromCharacterClass(string? characterClassInput = null)
     {
-        var isValid = false;
-        var selectedClassValue = 0;
-
-        if(!string.IsNullOrEmpty(characterClassInput))
+        if(!string.IsNullOrEmpty(characterClassInput)
+            && CharacterClassLookup.TryGetValue(characterClassInput, out var selectedClassValue))
         {
-            if(CharacterClassLookup.TryGetValue(characterClassInput.ToLowerInvariant(), out selectedClassValue))
-            {
-                isValid = true;
-            }
+            return selectedClassValue;
         }
 
-        while(!isValid)
+        while(true)
         {
             Console.WriteLine("Please input your desired class");
             var newInput = Console.ReadLine();
 
-            if(string.IsNullOrEmpty(newInput)) continue;
-
-            if(!CharacterClassLookup.TryGetValue(newInput.ToLowerInvariant(), out selectedClassValue)) continue;
-
-            return selectedClassValue;
+            if(!string.IsNullOrEmpty(newInput)
+                && CharacterClassLookup.TryGetValue(newInput, out selectedClassValue))
+            {
+                return selectedClassValue;
+            }
         }
-
-        return selectedClassValue;
     }
 
     internal static string CalculateSectionIdFromTotal(int total) =>

@@ -99,7 +99,7 @@ partial class Program
         {'9', 7 }
     };
 
-    private static readonly Dictionary<string, int> CharacterClassLookup = new()
+    private static readonly Dictionary<string, int> CharacterClassLookup = new(StringComparer.OrdinalIgnoreCase)
     {
         {"humar", 5 },
         {"hunewearl", 6 },
