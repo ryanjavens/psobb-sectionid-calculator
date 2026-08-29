@@ -10,6 +10,8 @@ A small .NET CLI tool that calculates your Phantasy Star Online Blue Burst Secti
 dotnet run --name YourCharacterName --class hucast
 ```
 
+test
+
 If `--name` or `--class` is omitted, you'll be prompted for it interactively — class selection is presented as a color-coded menu you can pick from with the arrow keys.
 
 The result is displayed on an alternate screen, with the class and section ID color-coded to match their in-game colors. Press any key to exit.
