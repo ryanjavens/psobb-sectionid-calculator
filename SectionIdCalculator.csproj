@@ -12,7 +12,12 @@
     <!-- Optimizations for Linux native binary-->
     <PublishSingleFile>true</PublishSingleFile>
     <SelfContained>true</SelfContained>
-    <PublishTrimmed>true</PublishTrimmed>
+    <!-- Trimming disabled: Spectre.Console.Cli relies on reflection to resolve
+         command settings types and is not trim-safe. -->
+    <PublishTrimmed>false</PublishTrimmed>
+
+    <!-- Embed debug symbols into the binary instead of emitting a separate .pdb -->
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
