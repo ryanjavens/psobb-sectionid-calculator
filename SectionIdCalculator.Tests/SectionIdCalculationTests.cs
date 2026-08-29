@@ -26,4 +26,29 @@ public class SectionIdCalculationTests
 
         Assert.Equal(expectedValue, value);
     }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("P")]
+    [InlineData("PSOLover10")]
+    public void ValidateSucceedsForNamesWithinLimits(string? name)
+    {
+        var settings = new CalculateSectionIdCommand.Settings { Name = name };
+
+        var result = settings.Validate();
+
+        Assert.True(result.Successful);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("PSOLover101")]
+    public void ValidateFailsForNamesOutsideLimits(string name)
+    {
+        var settings = new CalculateSectionIdCommand.Settings { Name = name };
+
+        var result = settings.Validate();
+
+        Assert.False(result.Successful);
+    }
 }

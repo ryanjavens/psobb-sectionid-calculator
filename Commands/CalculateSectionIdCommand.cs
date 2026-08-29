@@ -4,6 +4,10 @@ using Spectre.Console.Cli;
 
 internal sealed partial class CalculateSectionIdCommand : Command<CalculateSectionIdCommand.Settings>
 {
+    private const string NameValidationMessage = "Character names must be between 1 and 10 characters.";
+
+    private static bool IsValidNameLength(string name) => name.Length is >= 1 and <= 10;
+
     internal sealed class Settings : CommandSettings
     {
         [CommandOption("-n|--name <NAME>")]
@@ -15,8 +19,8 @@ internal sealed partial class CalculateSectionIdCommand : Command<CalculateSecti
         public string? CharacterClass { get; set; }
 
         public override ValidationResult Validate() =>
-            string.IsNullOrWhiteSpace(Name)
-                ? ValidationResult.Error("Required option '--name' is missing.")
+            Name is not null && !IsValidNameLength(Name)
+                ? ValidationResult.Error(NameValidationMessage)
                 : ValidationResult.Success();
     }
 
@@ -24,10 +28,15 @@ internal sealed partial class CalculateSectionIdCommand : Command<CalculateSecti
     {
         AnsiConsole.AlternateScreen(() =>
         {
-            var total = CalculateValueFromCharacterClass(settings.CharacterClass);
-            total += CalculateValueFromName(settings.Name!);
+            var characterClass = ResolveCharacterClass(settings.CharacterClass);
+            var name = ResolveName(settings.Name);
 
+            var total = characterClass.Value + CalculateValueFromName(name);
             var sectionId = CalculateSectionIdFromTotal(total);
+
+            AnsiConsole.Clear();
+            AnsiConsole.MarkupLine($"Class: {ColorizeClassName(characterClass.Name)}");
+            AnsiConsole.MarkupLine($"Name: {name}");
             AnsiConsole.MarkupLine($"Your section ID is: {ColorizeSectionId(sectionId)}");
 
             AnsiConsole.MarkupLine("[grey]Press any key to exit...[/]");
@@ -37,8 +46,10 @@ internal sealed partial class CalculateSectionIdCommand : Command<CalculateSecti
         return 0;
     }
 
-    internal static int CalculateValueFromName(string name)
+    internal static int CalculateValueFromName(string? name = null)
     {
+        name = ResolveName(name);
+
         var total = 0;
 
         foreach(var currentChar in name)
@@ -54,12 +65,29 @@ internal sealed partial class CalculateSectionIdCommand : Command<CalculateSecti
         return total;
     }
 
-    internal static int CalculateValueFromCharacterClass(string? characterClassInput = null)
+    internal static int CalculateValueFromCharacterClass(string? characterClassInput = null) =>
+        ResolveCharacterClass(characterClassInput).Value;
+
+    private static string ResolveName(string? name)
+    {
+        if(string.IsNullOrWhiteSpace(name))
+        {
+            name = AnsiConsole.Prompt(
+                new TextPrompt<string>("Please enter your desired [green]name[/]:")
+                    .Validate(input => IsValidNameLength(input)
+                        ? ValidationResult.Success()
+                        : ValidationResult.Error($"[red]{NameValidationMessage}[/]")));
+        }
+
+        return name;
+    }
+
+    private static CharacterClass ResolveCharacterClass(string? characterClassInput)
     {
         if(!string.IsNullOrEmpty(characterClassInput)
             && CharacterClassLookup.TryGetValue(characterClassInput, out var selectedClass))
         {
-            return selectedClass.Value;
+            return selectedClass;
         }
 
         var selectedClassName = AnsiConsole.Prompt(
@@ -69,7 +97,7 @@ internal sealed partial class CalculateSectionIdCommand : Command<CalculateSecti
                 .UseConverter(ColorizeClassName)
                 .AddChoices(CharacterClassLookup.Keys));
 
-        return CharacterClassLookup[selectedClassName].Value;
+        return CharacterClassLookup[selectedClassName];
     }
 
     private static string ColorizeClassName(string className) =>
